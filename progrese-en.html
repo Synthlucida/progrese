@@ -755,25 +755,25 @@
   <div class="panel">
     <div class="row">
       <div class="field">
-        <span class="label">Key</span>
+        <label class="label" for="rootSelect">Key</label>
         <select id="rootSelect"></select>
       </div>
       <div class="field">
-        <span class="label">Tempo</span>
+        <label class="label" for="tempoSlider">Tempo</label>
         <div class="tempo-wrap" style="margin-top:6px;">
           <input type="range" id="tempoSlider" min="55" max="150" value="100">
           <span class="tempo-val" id="tempoVal">100 BPM</span>
         </div>
       </div>
       <div class="field">
-        <span class="label">Volume</span>
+        <label class="label" for="volumeSlider">Volume</label>
         <div class="tempo-wrap" style="margin-top:6px;">
           <input type="range" id="volumeSlider" min="0" max="100" value="80">
           <span class="tempo-val" id="volumeVal">80 %</span>
         </div>
       </div>
       <div class="field">
-        <span class="label">Pitch</span>
+        <label class="label" for="pitchSlider">Pitch</label>
         <div class="tempo-wrap" style="margin-top:6px;">
           <input type="range" id="pitchSlider" min="-12" max="12" value="0" step="1" title="Shifts the whole generated progression up/down in semitones — chords, melody, bass and arpeggio (drums aren't affected).">
           <span class="tempo-val" id="pitchVal">0</span>
@@ -786,19 +786,19 @@
 
     <div class="row" style="margin-top:16px;">
       <div class="field">
-        <span class="label">Melody style</span>
+        <label class="label" for="melodyStyleSelect">Melody style</label>
         <select id="melodyStyleSelect"></select>
       </div>
       <div class="field">
-        <span class="label">Bass style</span>
+        <label class="label" for="bassStyleSelect">Bass style</label>
         <select id="bassStyleSelect"></select>
       </div>
       <div class="field">
-        <span class="label">Arp style</span>
+        <label class="label" for="arpStyleSelect">Arp style</label>
         <select id="arpStyleSelect"></select>
       </div>
       <div class="field">
-        <span class="label">Drum style</span>
+        <label class="label" for="drumStyleSelect">Drum style</label>
         <select id="drumStyleSelect"></select>
       </div>
     </div>
@@ -909,7 +909,7 @@
       </p>
       <div class="row">
         <div class="field" style="flex:1 1 260px;">
-          <span class="label">MIDI output</span>
+          <label class="label" for="midiOutputSelect">MIDI output</label>
           <select id="midiOutputSelect" disabled>
             <option>Enable MIDI access first</option>
           </select>
@@ -1138,7 +1138,7 @@
       <summary>What to do with the exported MIDI file (DAW workflow)</summary>
       <p>
         Drag the exported .mid file onto an empty MIDI track in Ableton, FL Studio, Logic, or
-        Reaper — it contains four separate tracks (chords, melody, bass, arpeggio), so you can
+        Reaper — it contains five separate tracks (chords, melody, bass, arpeggio, drums), so you can
         assign each one its own instrument or VST plugin. A fast starting point: put a pad or
         piano on the chord track, a simple synth bass on the bassline, and let the melody play
         through a lead or pluck synth. If the loop feels short, just copy and paste the whole
@@ -1160,8 +1160,8 @@
         and play at a slow tempo — dreamy also occasionally borrows a dense 6/9 chord. Epic is
         minor and dramatic, sitting around 90 BPM, while chill/lo-fi is also minor with seventh
         chords but a more relaxed groove and a touch of 6/9 and add9 chords typical of lo-fi and
-        neo-soul production. Nostalgic is the only major-key mood among the slower/mid-tempo
-        group, and leans on the vi–IV pull (occasionally IV6) that's characteristic of that sound.
+        neo-soul production. Nostalgic is a major-key mood at a mid tempo of around 96 BPM,
+        and leans on the vi–IV pull (occasionally IV6) that's characteristic of that sound.
         Moods can be switched anytime while keeping the same key, so it's easy to compare how one
         root note sounds across all eight.
       </p>
@@ -1335,8 +1335,16 @@ function chordSymbol(rootName, tones, ext){
   if(ext==='sus2') return rootName + 'sus2';
   if(ext==='sus4') return rootName + 'sus4';
   if(ext==='9th'){
-    const thirdInterval = tones[1] - tones[0];
-    return rootName + (thirdInterval===3 ? 'm9' : '9');
+    // 9th chord built from the scale: tell apart maj9 / m9 / 9 (dominant) and
+    // chords with a flat ninth (iii in major, v in minor) and the diminished degree.
+    const third = tones[1] - tones[0];
+    const fifth = tones[2] - tones[0];
+    const seventh = tones[3] - tones[0];
+    const ninth = tones[4] - tones[0];
+    if(fifth===6) return rootName + 'm7b5' + (ninth===13 ? '(b9)' : '(9)');
+    if(ninth===13) return rootName + (third===3 ? 'm7b9' : '7b9');
+    if(seventh===11) return rootName + (third===3 ? 'mMaj9' : 'maj9');
+    return rootName + (third===3 ? 'm9' : '9');
   }
   if(ext==='6th'){
     const thirdInterval = tones[1] - tones[0];
@@ -1473,7 +1481,7 @@ function pickPattern(list, styleVal){
 function genMelody(chords, style){
   return chords.map(c=>{
     const p = pickPattern(MELODY_PATTERNS, style);
-    return p.pat.map(i => c.tones[i % c.tones.length] + 12);
+    return p.pat.map(i => arpNoteAt(c.tones, i) + 12);
   });
 }
 
@@ -1528,14 +1536,17 @@ function voiceLeadChords(chords){
     if(!prevVoiced){
       c.voicedTones = c.tones.slice();
     } else {
+      const used = new Set(); // two chord tones must not end up on the same pitch (unison)
       c.voicedTones = c.tones.map(t=>{
         let best = t, bestDist = Infinity;
         for(let oct=-2; oct<=2; oct++){
           const cand = t + oct*12;
           if(cand < REG_LOW || cand > REG_HIGH) continue;
+          if(used.has(cand)) continue;
           const dist = Math.min(...prevVoiced.map(p=>Math.abs(cand-p)));
           if(dist < bestDist){ bestDist = dist; best = cand; }
         }
+        used.add(best);
         return best;
       });
     }
@@ -1710,7 +1721,7 @@ const tempoVal = document.getElementById('tempoVal');
 tempoSlider.addEventListener('input', ()=>{
   const bpm = parseInt(tempoSlider.value,10);
   tempoVal.textContent = bpm + ' BPM';
-  if(current) current.tempo = bpm;
+  if(current){ current.tempo = bpm; scheduleUrlSync(); }
   // The engine recomputes the 16th-note duration and uses it starting on the
   // NEXT not-yet-scheduled step — since nothing already sent to the audio
   // graph gets recalculated retroactively (unlike Tone.Transport.bpm), there's
@@ -1764,6 +1775,7 @@ function formatPitchVal(n){
 pitchSlider.addEventListener('input', ()=>{
   globalPitchSemitones = parseInt(pitchSlider.value,10) || 0;
   pitchVal.textContent = formatPitchVal(globalPitchSemitones);
+  if(current) scheduleUrlSync();
 });
 
 /* ================= PER-INSTRUMENT MIXER =================
@@ -1987,11 +1999,22 @@ function applyDawEdits(str){
 }
 
 function updateShareUrl(){
-  const p = buildShareParams();
-  if(!p) return;
-  const url = new URL(window.location.href);
-  url.search = p.toString();
-  history.replaceState(null, '', url);
+  try{
+    const p = buildShareParams();
+    if(!p) return;
+    const url = new URL(window.location.href);
+    url.search = p.toString();
+    history.replaceState(null, '', url);
+  }catch(e){
+    // e.g. file:// or a restricted context — the URL just isn't updated, the app keeps working
+  }
+}
+/* Continuously mirror changes (tempo, pitch, Mini DAW edits) into the URL so
+   they survive a page reload — no need to click "Share link" first. */
+let urlSyncTimer = null;
+function scheduleUrlSync(){
+  clearTimeout(urlSyncTimer);
+  urlSyncTimer = setTimeout(()=>{ if(current) updateShareUrl(); }, 250);
 }
 function hasOption(sel, value){
   return Array.prototype.some.call(sel.options, o => o.value === value);
@@ -2818,6 +2841,7 @@ async function startPlayback(mode, resumeAt){
   if(myToken !== playToken) return; // a newer stop/start arrived meanwhile
 
   stopScheduler();
+  rebuildLayerGains(); // cuts off any tail of the previous playback (e.g. when switching mode)
 
   const playChordsNow = mode === 'full' || mode === 'chords';
   const playMelodyNow = mode === 'full' || mode === 'melody';
@@ -2848,11 +2872,46 @@ async function startPlayback(mode, resumeAt){
   playDrumsBtnEl.textContent = mode === 'drums' ? '■ Stop' : '♪ Drums only';
 }
 
+/* Notes that are already scheduled/sounding (a chord with a 1.2 s release
+   etc.) don't stop by themselves after Stop, because they were handed to Web
+   Audio. So the old layer gain nodes are quickly faded out and disconnected,
+   and the layers get fresh, clean nodes — the tail of old notes can never
+   come back, not even over a new Play. The new nodes start directly at the
+   right volume according to the mixer. */
+function rebuildLayerGains(){
+  if(!audioCtx || !masterLimiter) return;
+  const now = audioCtx.currentTime;
+  [chordGain, melodyGain, bassGain, arpGain, kickGain, snareGain, hihatGain, openhatGain].forEach(g=>{
+    if(!g) return;
+    try{
+      g.gain.cancelScheduledValues(now);
+      g.gain.setTargetAtTime(0, now, 0.012);
+    }catch(e){}
+    setTimeout(()=>{ try{ g.disconnect(); }catch(e){} }, 400);
+  });
+  const mk = (base, percent)=>{
+    const g = audioCtx.createGain();
+    g.gain.value = dbToGain(volFromPercent(base, percent));
+    g.connect(masterLimiter);
+    return g;
+  };
+  chordGain = mk(BASE_VOL.chords, mixerVol.chords);
+  melodyGain = mk(BASE_VOL.melody, mixerVol.melody);
+  bassGain = mk(BASE_VOL.bass, mixerVol.bass);
+  arpGain = mk(BASE_VOL.arp, mixerVol.arp);
+  kickGain = mk(BASE_VOL.kick, mixerVol.drums);
+  snareGain = mk(BASE_VOL.snare, mixerVol.drums);
+  hihatGain = mk(BASE_VOL.hh, mixerVol.drums);
+  openhatGain = mk(BASE_VOL.oh, mixerVol.drums);
+  activeVoiceEnv = { melody:null, bass:null, arp:null };
+}
+
 function stopPlayback(){
   playToken++;
   stopScheduler();
   playChords = playMelody = playBass = playArp = playDrums = false;
   clearLeds();
+  rebuildLayerGains();
   if(midiLiveEnabled) midiAllNotesOff(); // safety net in case a note got left "stuck"
   isPlaying = false;
   playMode = null;
@@ -2898,6 +2957,7 @@ function refreshLayersDebounced(layers){
     const toRefresh = Array.from(pendingRefreshLayers);
     pendingRefreshLayers.clear();
     refreshLayers(toRefresh);
+    scheduleUrlSync(); // Mini DAW edits get written to the URL (parameter "e")
   }, 150);
 }
 
@@ -2969,7 +3029,7 @@ function strBytes(s){ return Array.from(s).map(c=>c.charCodeAt(0)); }
 
 function buildTrackChunk(events, endTick){
   // events: [{tick, type:'on'|'off', note, vel, channel}]
-  events.sort((a,b)=> a.tick - b.tick || (a.type==='off'?-1:1)); // note-offs before note-ons at same tick
+  events.sort((a,b)=> a.tick - b.tick || (a.type===b.type ? 0 : (a.type==='off' ? -1 : 1))); // note-offs before note-ons at same tick
   let data = [];
   let lastTick = 0;
   events.forEach(ev=>{
