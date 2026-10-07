@@ -6,7 +6,7 @@
 
 <!-- ===== Primary SEO ===== -->
 <title>Progrese — create chords, melodies & MIDI beats online, free</title>
-<meta name="description" content="Progrese is a free web tool for musicians and producers: pick a key and mood and get a musically coherent chord progression with melody, bassline, arpeggio and drums in seconds. Play it in your browser or export it as MIDI for your DAW. No sign-up, nothing to install.">
+<meta name="description" content="Free online chord progression generator with melody, bass, arpeggio and drums. Pick a key and mood, play in your browser or export MIDI to your DAW. No sign-up.">
 <meta name="keywords" content="Progrese, chord generator, make music online, free MIDI generator, chord progressions, melody generator, drum pattern generator, songwriting tool, beatmaking online, no-install music tool, tool for producers">
 <meta name="author" content="Progrese">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -25,6 +25,7 @@
 <meta property="og:image" content="https://synthlucida.com/progrese/progrese-og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Progrese — create chords, melodies and MIDI beats online">
 <meta property="og:locale" content="en_US">
 <meta property="og:locale:alternate" content="cs_CZ">
 
@@ -33,6 +34,7 @@
 <meta name="twitter:title" content="Progrese — create chords, melodies & MIDI beats online, free">
 <meta name="twitter:description" content="Pick a key and mood, get a musically coherent chord progression with melody, bassline, arpeggio and drums. Play it online or download it as MIDI. Free, no sign-up.">
 <meta name="twitter:image" content="https://synthlucida.com/progrese/progrese-og.png">
+<meta name="twitter:image:alt" content="Progrese — create chords, melodies and MIDI beats online">
 
 <!-- ===== Favicon ===== -->
 <link rel="icon" href="/progrese/progrese-favicon.ico" sizes="any">
@@ -411,7 +413,7 @@
   .footer-nav a:hover{color:var(--amber);}
   .footer-nav a:focus-visible{outline:2px solid var(--amber); outline-offset:2px;}
   .footer-nav span{color:var(--line);}
-  .footer-copy{color:#5a5245; font-size:10px;}
+  .footer-copy{color:#8c8272; font-size:10px;}
 
   @media (max-width:900px){
     .grid-3{grid-template-columns:repeat(2, 1fr);}
@@ -440,7 +442,7 @@
   }
 </style>
 <script data-goatcounter="https://progrese.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+        async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -469,7 +471,7 @@
   <section class="hero">
     <div class="wrap">
       <span class="eyebrow">🎹 free · no sign-up · runs in your browser</span>
-      <h1>Chords, melodies and basslines<br>in <span class="hl">seconds</span>, not hours</h1>
+      <h1>Chord, melody and bass generator<br>in <span class="hl">seconds</span>, not hours</h1>
       <p class="hero-sub">
         Progrese is an online chord progression generator for musicians, producers and beatmakers.
         Pick a key and mood — and the tool builds a musically coherent progression with melody,
@@ -484,18 +486,18 @@
         <span>🎼 diatonically correct chords</span>
         <span>⚡ MIDI export</span>
         <span>🎧 8 moods to choose from</span>
-        <span class="badge-new">🥁 drums included</span>
+        <span>🥁 drums that match the mood</span>
         <span>🎚️ per-instrument mixer</span>
         <span class="badge-new teal">🎛️ Mini DAW built in</span>
         <span class="badge-new">📄 sheet music export (PDF)</span>
-        <span>🆓 free forever</span>
+        <span>🆓 free</span>
       </div>
     </div>
   </section>
 
   <div class="preview-wrap">
     <div class="wrap" style="display:flex; justify-content:center;">
-      <div class="preview-card" aria-hidden="true">
+      <div class="preview-card" role="img" aria-label="Progrese interface preview: Happy mood, C–G–Am–F progression, play and MIDI export buttons, 112 BPM">
         <div class="preview-topline">
           <div class="dots"><span></span><span></span><span></span></div>
           <span class="ptitle">progrese · preview</span>
@@ -516,7 +518,7 @@
         <div class="preview-foot">
           <div class="pv-mini hi">▶ play</div>
           <div class="pv-mini">⇩ export MIDI</div>
-          <div class="pv-mini">100 BPM</div>
+          <div class="pv-mini">112 BPM</div>
         </div>
       </div>
     </div>
@@ -546,13 +548,11 @@
           <p>Melody, bassline and arpeggio are generated automatically from the chord tones, so they always sit in tune with each other.</p>
         </div>
         <div class="card drum-card">
-          <span class="new-pill">New</span>
           <span class="ico">🥁</span>
           <h3>Drums that match the mood</h3>
           <p>Add a kick, snare and hi-hat groove on top — pick a specific drum style or leave it on auto for a fresh pattern on every bar.</p>
         </div>
         <div class="card mixer-card">
-          <span class="new-pill teal">New</span>
           <span class="ico">🎚️</span>
           <h3>Per-instrument volume mixer</h3>
           <p>Fine-tune the volume of chords, melody, bass, arp and drums independently, right in the browser — tuck the beat back or bring the melody forward before you play or export.</p>
@@ -580,8 +580,18 @@
           <p>Send playback in real time to a virtual MIDI port and listen to the progression through your own synth right inside your DAW — no manual MIDI export/import needed.</p>
         </div>
         <div class="card">
+          <span class="ico">🔗</span>
+          <h3>Share by link</h3>
+          <p>A finished progression, including your Mini DAW edits, is saved into a link. Send it on and whoever opens it hears exactly what you hear.</p>
+        </div>
+        <div class="card">
+          <span class="ico">🎚️</span>
+          <h3>Transpose ±12 semitones</h3>
+          <p>Shift the whole progression — chords, melody, bass and arpeggio — up or down by as much as an octave to suit your voice or instrument. Drums stay as they are.</p>
+        </div>
+        <div class="card">
           <span class="ico">🆓</span>
-          <h3>Free, no limits</h3>
+          <h3>Free, no sign-up</h3>
           <p>No sign-up, no cap on exports. Anything you generate and download is yours — including for commercial use.</p>
         </div>
       </div>
@@ -655,7 +665,7 @@
           <div class="step-num">4</div>
           <div>
             <h3>Fine-tune it in the Mini DAW</h3>
-            <p>Balance each layer's volume in the mixer, then open the Mini DAW to mute individual steps, shift notes up or down an octave, or re-roll just one bar that isn't working.</p>
+            <p>Balance each layer's volume in the mixer, transpose the whole thing by up to 12 semitones if you like, then open the Mini DAW to mute individual steps, shift notes up or down an octave, or re-roll just one bar that isn't working.</p>
           </div>
         </div>
         <div class="step-row">
@@ -689,7 +699,7 @@
         </div>
         <div class="mood-card" style="--m-accent:#b79cef;">
           <h3>Dreamy</h3>
-          <p class="mood-meta">major · 7th chords</p>
+          <p class="mood-meta">major · ~70 BPM</p>
           <p>Floating seventh chords, slow and soft.</p>
         </div>
         <div class="mood-card" style="--m-accent:#ff6f9c;">
@@ -699,7 +709,7 @@
         </div>
         <div class="mood-card" style="--m-accent:#ff8a3d;">
           <h3>Chill / Lo-fi</h3>
-          <p class="mood-meta">minor · 7th chords</p>
+          <p class="mood-meta">minor · ~82 BPM</p>
           <p>Relaxed groove, great for beats.</p>
         </div>
         <div class="mood-card" style="--m-accent:#9a9082;">
@@ -709,8 +719,8 @@
         </div>
         <div class="mood-card" style="--m-accent:#ff6f9c;">
           <h3>Romantic</h3>
-          <p class="mood-meta">major · 9th chords</p>
-          <p>Full, warm sound, slow tempo.</p>
+          <p class="mood-meta">major · ~68 BPM</p>
+          <p>Full, warm ninth chords, slow tempo.</p>
         </div>
         <div class="mood-card" style="--m-accent:#4dd2c4;">
           <h3>Nostalgic</h3>
